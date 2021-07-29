@@ -1,0 +1,17 @@
+function telephoneCheck(str) {
+  if (/^1?\s?\d{3}-?\s?\d{3}-?\s?\d{4}$/.test(str)) {
+    console.log(true);
+    return true;
+  } else {
+  console.log(false)}
+  return false;
+}
+
+telephoneCheck('1 123 456 7890');
+
+// XXX-XXX-XXXX 
+// (XXX)XXX-XXXX 
+// (XXX) XXX-XXXX 
+// XXX XXX XXXX
+// XXXXXXXXXX
+// 1 XXX XXX XXXX 
