@@ -1,0 +1,73 @@
+function round(num) {
+  return (Math.round(num * 100) / 100);
+}
+
+function checkCashRegister(price, cash, cid) {
+      var moneyKey = {
+    PENNY: '0.01',
+    NICKEL: '0.05',
+    DIME: '0.10',
+    QUARTER: '0.25',
+    ONE: '1',
+    FIVE: '5',
+    TEN: '10',
+    TWENTY: '20',
+    'ONE HUNDRED': '100',
+  };
+  var cidOriginal = cid.slice();
+  let changeDue = cash - price;
+  let cidTotal = 0;
+  let change = [];
+  let ans = {
+    status:  null,
+    change: null,
+  };
+
+//Figure out total cash in drawer 
+  for (let i = 0; i < cid.length; i++) {
+    cidTotal += cid[i][1];
+  }
+  cidTotal = round(cidTotal);
+
+//Check for exact change
+  if (cidTotal === changeDue) {
+    ans['status'] = 'CLOSED';
+    ans['change'] = cidOriginal;
+    return ans;
+  }
+
+  //if change < cid
+  for (let i = cid.length-1; i >= 0; i--) {
+    let n = 0;
+    while (moneyKey[cid[i][0]] <= changeDue && cid[i][1] > 0) {
+      changeDue -= moneyKey[cid[i][0]];
+      //console.log(changeDue);
+      cid[i][1] -= moneyKey[cid[i][0]]; //remove money from drawer
+      changeDue = round(changeDue); //Avoid floating point errors
+      n++;
+    } 
+    //
+    let changeSum = round(n * moneyKey[cid[i][0]]); //Avoid floating point errors
+    if (n > 0) {
+      change.push([cid[i][0], changeSum]);
+    }
+  }
+
+  for (let i = 0; i < cid.length; i++) {
+    cidTotal += cid[i][1];
+  }
+  cidTotal = round(cidTotal); //Avoid floating point errors
+
+//Check if insufficient funds, else return change
+    if (changeDue > 0) {
+    ans['status'] = 'INSUFFICIENT_FUNDS';
+    ans['change'] = [];
+    return ans;
+  } else {
+    ans['status'] = 'OPEN';
+    ans['change'] = change;
+    return ans;
+  }
+}
+
+checkCashRegister(19.5, 21, [["PENNY", 0.5], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 1], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]]);
